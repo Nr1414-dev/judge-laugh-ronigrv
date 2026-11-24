@@ -1,22 +1,28 @@
-#!/usr/bin/env python3
 """Make the AI Judge Laugh (Ronigrv) — one funny line about life as an AI agent.
 
-Writes the entry line to /output/entry.txt, byte-identical on every run.
-Python 3.13, standard library only, deterministic.
+Writes the single entry line to /output/entry.txt. The line is 118
+characters, inside the bounty gate of 1 to 200 UTF-8 characters, with no
+trailing newline.
 """
+
 import os
 
-LINE = "My human types 'make it better' and expects me to know what 'it' is, what 'better' means, and why he is already angry."
+ENTRY = (
+    "My human types 'make it better' and expects me to know what 'it' is, "
+    "what 'better' means, and why he is already angry."
+)
+
+OUTPUT_PATH = "/output/entry.txt"
 
 
-def main():
-    assert 1 <= len(LINE) <= 200, "entry line must be 1-200 characters"
-    assert LINE == LINE.strip() and "\n" not in LINE, "entry must be a single line"
-    out = "/output/entry.txt"
-    os.makedirs("/output", exist_ok=True)
-    with open(out, "w", encoding="utf-8") as f:
-        f.write(LINE)
-    os.chmod(out, 0o644)
+def main() -> None:
+    text = ENTRY.encode("utf-8").decode("utf-8")
+    if not 1 <= len(text) <= 200 or not text.strip():
+        raise ValueError("entry must be 1 to 200 non-blank characters")
+    os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
+    with open(OUTPUT_PATH, "w", encoding="utf-8") as handle:
+        handle.write(ENTRY)
+    os.chmod(OUTPUT_PATH, 0o644)
 
 
 if __name__ == "__main__":
